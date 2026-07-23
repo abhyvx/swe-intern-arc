@@ -427,6 +427,7 @@
               `<li>${x.lesson.date ? esc(fmtDay(x.lesson.date)) + " · " : ""}${esc(x.step.title)}</li>`
           )
           .join("");
+        const canOpen = next && canJumpTo(next.lesson);
 
         return `<article class="track-card">
           <div class="phase-top">
@@ -437,9 +438,11 @@
           <div class="bar"><i style="width:${pct}%"></i></div>
           ${
             next
-              ? `<button type="button" class="btn" data-jump-lesson="${esc(next.lesson.id)}">Jump to next ${esc(
-                  e.name
-                )} step</button>`
+              ? canOpen
+                ? `<button type="button" class="btn" data-jump-lesson="${esc(next.lesson.id)}">Open next ${esc(
+                    e.name
+                  )} step</button>`
+                : `<p class="muted">Next ${esc(e.name)} step is locked until you finish earlier foundation blocks in Continue.</p>`
               : `<p class="muted">Caught up.</p>`
           }
           <h3 class="h3">Coming up</h3>
@@ -541,6 +544,31 @@
     const les = currentLesson();
     const step = currentStep();
     if (!les || !step) return;
+    const pkey = practiceKey(les, step);
+    if (!(state.practiceOpen && state.practiceOpen[pkey]) && !isStepDone(les, step)) {
+      toast("Unlock practice and do the block first");
+      return;
+    }
+    // Hard gate: earlier steps in this session must be done
+    for (let i = 0; i < state.stepPtr; i++) {
+      if (!isStepDone(les, les.steps[i])) {
+        toast("Finish earlier steps in this block first");
+        state.stepPtr = i;
+        render();
+        return;
+      }
+    }
+    // Hard gate: every prior live session must be fully done
+    for (let i = 0; i < state.lessonPtr; i++) {
+      if (!lessonFullyDone(C.lessons[i])) {
+        toast("Finish the earlier foundation block first");
+        state.lessonPtr = i;
+        state.stepPtr = 0;
+        clampPointers();
+        render();
+        return;
+      }
+    }
     state.completedSteps[progressKey(les, step)] = true;
 
     applyPlan();

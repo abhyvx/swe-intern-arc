@@ -171,24 +171,16 @@
           used += m;
         } else trimmed += 1;
       });
-      // Keep original curriculum order among survivors
+      // Keep original curriculum order among survivors (never reorder learning deps)
       const allow = new Set(work.map((x) => stepKey(x.lessonId, x.step.id)));
       work = backlog.filter((x) => allow.has(stepKey(x.lessonId, x.step.id)));
     }
 
-    // Soft priority: before winterReady, pack winter-critical earlier when behind
-    if (today < C.meta.winterReady && status === "behind") {
-      const crit = [];
-      const rest = [];
-      work.forEach((x) => {
-        if (isWinterCritical(x.step, { title: x.lessonTitle }) && x.origDate <= C.meta.winterReady) crit.push(x);
-        else rest.push(x);
-      });
-      // Keep relative order within each bucket (stable)
-      work = crit.concat(rest);
-    }
+    // IMPORTANT: never reorder the spine. Foundations before later work.
+    // Recalibration only moves unfinished steps onto later calendar days.
+    // Deadlines change pace caps / status, not prerequisite order.
 
-    // Pack into live lessons per day
+    // Pack into live lessons per day (consume work front-to-back only)
     const liveLessons = [];
     let bi = 0;
     let sessionN = 0;
@@ -201,7 +193,7 @@
       while (bi < work.length && left > 0) {
         const batch = [];
         let used = 0;
-        const startTitle = work[bi].lessonTitle;
+        const startLessonId = work[bi].lessonId;
 
         while (bi < work.length) {
           const item = work[bi];
@@ -214,8 +206,11 @@
             used += m;
             break;
           }
-          // Prefer keep same original lesson together when possible
-          if (batch.length && item.lessonTitle !== startTitle && used >= left * 0.55) break;
+          // Keep the same original lesson (building block) together before mixing
+          if (batch.length && item.lessonId !== startLessonId) {
+            // If this day still has room, only continue if we finished the prior block
+            break;
+          }
           batch.push(item);
           bi += 1;
           used += m;
@@ -241,8 +236,8 @@
           concept: first.concept || "Recalibrated session from your remaining work.",
           why:
             status === "behind"
-              ? "Missed work was folded into this day. Stay realistic; finish what is here."
-              : first.why || "Stay on the arc.",
+              ? "Missed work was folded forward in order. Finish this block before later ones."
+              : first.why || "Stay on the arc. Finish this block before later ones.",
           phaseId,
           moduleId: `day-${date}`,
           moduleTitle: date <= C.meta.freeUntil ? "Recalibrated free block" : date < C.meta.classStart ? "Recalibrated bridge" : "Recalibrated fall",

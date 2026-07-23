@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TCP sockets and protocols</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="guide.css">
+  </head>
+<body>
+  <article class="guide">
+    <a class="back" href="../index.html">← Back to Arc</a>
+    <h1>TCP sockets and line protocols</h1>
+    <p class="muted">Foundation for NetKV. Goal: you understand accept loops and why we parse text commands.</p>
+
+    <h2>What TCP gives you</h2>
+    <p>A TCP connection is a reliable bidirectional byte stream between two programs. It does not know what a “message” is. You invent framing (for us: lines ending in newline).</p>
+
+    <h2>Server loop (mental model)</h2>
+    <ol>
+      <li><code>socket</code> — create endpoint</li>
+      <li><code>bind</code> — attach to host/port</li>
+      <li><code>listen</code> — mark as accepting</li>
+      <li><code>accept</code> — block until a client connects; returns a new socket for that client</li>
+      <li><code>recv</code> / <code>send</code> — read/write bytes</li>
+    </ol>
+
+    <h2>Why echo first</h2>
+    <p>Echo proves your accept/recv/send loop before SET/GET logic. If echo fails, do not debug the protocol yet.</p>
+
+    <h2>Why parse in pure functions</h2>
+    <p><code>parse("SET a b")</code> returning a structure lets you unit test without opening ports. Real services separate protocol parsing from networking.</p>
+
+    <h2>When you use this</h2>
+    <ul>
+      <li>Any networked service</li>
+      <li>Understanding Redis/Postgres at a high level</li>
+      <li>Systems interviews (“how would you design a KV store?”)</li>
+      <li>Debugging internship voice/realtime stacks: same “bytes on a connection” idea</li>
+    </ul>
+
+    <h2>How to fix common bugs</h2>
+    <ul>
+      <li><strong>Address already in use</strong> → old process still bound; kill it or change port</li>
+      <li><strong>Client hangs</strong> → server did not send a response newline; or blocked forever on recv</li>
+      <li><strong>Partial reads</strong> → TCP can split data; buffering matters as you grow past toy labs</li>
+    </ul>
+  </article>
+</body>
+</html>

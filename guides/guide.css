@@ -1,0 +1,96 @@
+/* Forced dark theme for teaching guides */
+html[data-theme="dark"],
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: #0d100e !important;
+  color: #e8ebe6 !important;
+  font-family: "DM Sans", system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+.guide {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px 18px 96px;
+}
+
+.guide h1 {
+  margin: 0 0 8px;
+  font-size: 1.7rem;
+  letter-spacing: -0.03em;
+  color: #f2f5f0;
+}
+
+.guide h2 {
+  margin: 28px 0 10px;
+  font-size: 1.12rem;
+  color: #5dcaa4;
+}
+
+.guide p,
+.guide li {
+  line-height: 1.6;
+  color: #d5dad2;
+}
+
+.guide .muted {
+  color: #9aa59c !important;
+}
+
+.guide strong {
+  color: #f0f3ed;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 18px;
+  color: #5dcaa4;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+.guide a {
+  color: #7ad4b0;
+}
+
+.guide code {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.88em;
+  background: #1a221c;
+  color: #b8f0d4;
+  padding: 2px 6px;
+  border-radius: 5px;
+  border: 1px solid #2a342e;
+}
+
+.guide pre.example,
+.example {
+  margin: 12px 0;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #121916 !important;
+  border: 1px solid #2a342e !important;
+  color: #d7ffe9 !important;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.guide ol,
+.guide ul {
+  padding-left: 1.2rem;
+}
+
+.guide li + li {
+  margin-top: 6px;
+}

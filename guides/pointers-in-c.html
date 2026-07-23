@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pointers in C</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="guide.css">
+  </head>
+<body>
+  <article class="guide">
+    <a class="back" href="../index.html">← Back to Arc</a>
+    <h1>Pointers in C</h1>
+    <p class="muted">This is the core of CMSC 216. Goal: you can explain * and &amp; and why swap needs pointers.</p>
+
+    <h2>Variables live at addresses</h2>
+    <p>Think of memory as numbered lockers. <code>int x = 42;</code> puts 42 in some locker. That locker’s number is the <strong>address</strong> of x.</p>
+    <p><code>&amp;x</code> means “the address of x”. A <strong>pointer</strong> is a variable that stores an address.</p>
+    <pre class="example">int x = 42;
+int *p = &amp;x;   /* p holds the address of x */
+printf("%d\n", *p); /* *p means "the value at that address" → 42 */
+*p = 7;            /* write 7 into x's locker */
+printf("%d\n", x); /* 7 */</pre>
+
+    <h2>Star in two places (this confuses everyone)</h2>
+    <ul>
+      <li><strong>Declaration</strong> <code>int *p</code> → “p is a pointer to int”</li>
+      <li><strong>Expression</strong> <code>*p</code> → “follow p to the value”</li>
+    </ul>
+
+    <h2>Why swap needs pointers</h2>
+    <p>C passes copies of ints into functions. <code>void swap(int a, int b)</code> swaps copies; callers unchanged.</p>
+    <p><code>void swap(int *a, int *b)</code> receives addresses, so it can write into the caller’s variables.</p>
+    <pre class="example">void swap(int *a, int *b) {
+  int t = *a;
+  *a = *b;
+  *b = t;
+}</pre>
+
+    <h2>Arrays decay</h2>
+    <p>When you pass an array to a function, C passes a pointer to the first element. That is why functions often take <code>int *a</code> plus a length.</p>
+
+    <h2>When you use this</h2>
+    <ul>
+      <li>Almost every CMSC 216 assignment</li>
+      <li>Understanding strings as <code>char *</code></li>
+      <li>Later: linked lists, syscalls, anything with memory</li>
+      <li>Interview talk: “pass by pointer vs pass by value”</li>
+    </ul>
+
+    <h2>How to fix common bugs</h2>
+    <ul>
+      <li><strong>segfault</strong> → often <code>*p</code> when p is garbage/NULL; initialize pointers</li>
+      <li><strong>swapped wrong</strong> → you swapped the pointers’ values instead of <code>*a</code>/<code>*b</code></li>
+      <li><strong>type warnings</strong> → <code>int *</code> vs <code>int</code> mismatch; read the warning</li>
+    </ul>
+
+    <h2>Check yourself</h2>
+    <p>Draw x and p as boxes. Show arrows. Then explain out loud why <code>*p = 7</code> changes x.</p>
+  </article>
+</body>
+</html>

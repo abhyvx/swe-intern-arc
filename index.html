@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SWE Intern Arc</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="hdr">
+      <div>
+        <h1 class="mark">SWE Intern Arc</h1>
+        <p class="who" id="greeting">Learn in order. One step at a time.</p>
+      </div>
+      <div class="hdr-actions">
+        <span class="chip pace" id="paceChip" data-status="on_track">On track</span>
+        <span class="chip" id="progressChip">0%</span>
+        <button type="button" class="icon-btn" id="themeToggle">Theme</button>
+      </div>
+    </header>
+
+    <p class="pace-line" id="paceLine">Recalibrating…</p>
+
+    <nav class="nav">
+      <button class="nav-btn active" data-tab="continue">Continue</button>
+      <button class="nav-btn" data-tab="map">Schedule</button>
+      <button class="nav-btn" data-tab="skills">Skills</button>
+      <button class="nav-btn" data-tab="projects">Projects</button>
+    </nav>
+
+    <main>
+      <section class="view active" id="view-continue">
+        <p class="eyebrow" id="phaseLabel"></p>
+        <p class="date-line" id="dayDate"></p>
+        <h2 class="h1" id="lessonTitle">Loading</h2>
+        <p class="concept" id="lessonConcept"></p>
+        <p class="why" id="dayWhy"></p>
+
+        <p class="how" id="howTo">Learn first: why, idea, when, syntax, code, walkthrough, fixes, then open docs/videos. Unlock practice only after that.</p>
+
+        <div id="currentStep" class="step-card"></div>
+
+        <div class="locked-box">
+          <h3 class="h3">Still locked in this session</h3>
+          <ul id="lockedSteps" class="locked-list"></ul>
+        </div>
+
+        <div class="next-lesson-box" id="nextLessonBox" hidden>
+          <h3 class="h3">After this session</h3>
+          <p id="nextLessonTitle" class="muted"></p>
+        </div>
+
+        <div class="row-actions">
+          <button type="button" class="btn" id="completeBtn">Mark step complete</button>
+        </div>
+      </section>
+
+      <section class="view" id="view-map">
+        <p class="lede" id="scheduleLede">Summer free time runs through mid August. Classes start end of August. Winter intern materials lock by early November.</p>
+        <div class="filter-row" id="segmentFilters"></div>
+        <div id="phaseMap"></div>
+        <div class="footer-actions">
+          <button type="button" class="btn ghost" id="exportBtn">Export progress</button>
+          <button type="button" class="btn ghost" id="importBtn">Import progress</button>
+          <input type="file" id="importFile" accept="application/json,.json" hidden>
+          <button type="button" class="btn ghost" id="resetBtn">Reset arc</button>
+        </div>
+        <p class="hint" id="saveMeta"></p>
+      </section>
+
+      <section class="view" id="view-skills">
+        <p class="lede">Same spine, four skill threads. Open a thread to see what is coming. Completing still happens in Continue order.</p>
+        <div class="filter-row" id="engineFilters"></div>
+        <div id="trackPanel"></div>
+      </section>
+
+      <section class="view" id="view-projects">
+        <p class="lede">Real products: Gambit, NetKV, TerpButler, plus a hackathon scoping method. Each step has Learn, Example, Do, Prove, and a link.</p>
+        <div id="projectList"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script src="curriculum.js"></script>
+  <script src="projects.js"></script>
+  <script src="teach_bank.js"></script>
+  <script src="enrich.js"></script>
+  <script src="recalibrate.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

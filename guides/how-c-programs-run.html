@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How C programs run</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="guide.css">
+  </head>
+<body>
+  <article class="guide">
+    <a class="back" href="../index.html">← Back to Arc</a>
+    <h1>How C programs run</h1>
+    <p class="muted">Read this before you write hello.c. Goal: you can explain compile vs run without hand-waving.</p>
+
+    <h2>The problem</h2>
+    <p>Your Mac does not understand a <code>.c</code> file as instructions. A <code>.c</code> file is text for humans. The CPU runs machine code. Something has to translate.</p>
+
+    <h2>The pipeline</h2>
+    <ol>
+      <li><strong>Write</strong> source: <code>hello.c</code></li>
+      <li><strong>Compile</strong> with <code>gcc</code>: turns text into an executable binary (often named <code>hello</code> with no extension)</li>
+      <li><strong>Run</strong> the binary: <code>./hello</code></li>
+    </ol>
+    <pre class="example">gcc -Wall -Wextra -o hello hello.c
+./hello</pre>
+    <p><code>-o hello</code> means “name the output binary hello”. If you skip <code>-o</code>, gcc often writes <code>a.out</code>.</p>
+
+    <h2>What -Wall -Wextra are for</h2>
+    <p>C will let you write dangerous mistakes that still “compile”. Warnings are free teaching. <code>-Wall -Wextra</code> turns many silent problems into messages. In CMSC 216, clean compiles matter.</p>
+
+    <h2>main is the entry</h2>
+    <pre class="example">#include &lt;stdio.h&gt;
+
+int main(void) {
+  printf("hi\n");
+  return 0;
+}</pre>
+    <p><code>#include &lt;stdio.h&gt;</code> pulls in the declaration of <code>printf</code>. <code>return 0</code> means success to the shell.</p>
+
+    <h2>sizeof</h2>
+    <p><code>sizeof(int)</code> is how many bytes an <code>int</code> uses <em>on this machine</em>. On modern Macs, <code>int</code> is often 4, pointers often 8. You measure; you do not guess from vibes.</p>
+
+    <h2>When you use this</h2>
+    <ul>
+      <li>Every CMSC 216 lab</li>
+      <li>Any systems project that touches C</li>
+      <li>Debugging “I ran the .c file” mistakes (you run the binary)</li>
+    </ul>
+
+    <h2>How to fix common failures</h2>
+    <ul>
+      <li><strong>command not found: gcc</strong> → install Command Line Tools: <code>xcode-select --install</code> (small tools package, not full Xcode app)</li>
+      <li><strong>error: expected ‘;’</strong> → missing semicolon; read the line above the error too</li>
+      <li><strong>permission denied: ./hello</strong> → rare; check you are running the binary you just built</li>
+      <li><strong>unused variable warning</strong> → delete it or use it; do not ignore warnings in 216</li>
+    </ul>
+
+    <h2>Check yourself</h2>
+    <p>Out loud: What is the difference between <code>hello.c</code> and <code>./hello</code>? Why do we pass <code>-Wall</code>?</p>
+  </article>
+</body>
+</html>

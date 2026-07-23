@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reading a codebase</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="guide.css">
+  </head>
+<body>
+  <article class="guide">
+    <a class="back" href="../index.html">← Back to Arc</a>
+    <h1>How to read a codebase you own</h1>
+    <p class="muted">Used for Gambit, TerpButler, internships, hackathons. Goal: find a path and defend it.</p>
+
+    <h2>Do not read every file</h2>
+    <p>Tourism feels productive and teaches little. Pick one user-visible behavior and chase it.</p>
+
+    <h2>Method</h2>
+    <ol>
+      <li><strong>Boot</strong> — if it does not run, fix that first or write exact errors</li>
+      <li><strong>Find UI entry</strong> — where the click/page starts</li>
+      <li><strong>Find API entry</strong> — route/handler for that action</li>
+      <li><strong>Find data/model</strong> — where numbers/strings are computed or loaded</li>
+      <li><strong>Write hops</strong> — <code>file::function → next</code> until you have 5+</li>
+      <li><strong>Prove one value</strong> — print/assert an intermediate</li>
+    </ol>
+
+    <h2>What “owning” means in interviews</h2>
+    <ul>
+      <li>You can whiteboard the hop list</li>
+      <li>You can name one failure mode</li>
+      <li>You can say what you would build next</li>
+      <li>You can distinguish what you wrote vs what you still do not understand (honesty)</li>
+    </ul>
+
+    <h2>When you use this</h2>
+    <ul>
+      <li>Internship onboarding on a foreign repo</li>
+      <li>Hackathon base selection</li>
+      <li>Resume project defense</li>
+    </ul>
+
+    <h2>How to fix “I am lost”</h2>
+    <ul>
+      <li>Search for route strings, <code>app.get</code>, <code>@app.</code>, <code>fetch(</code>, <code>axios</code></li>
+      <li>Use GitHub search in the repo</li>
+      <li>Draw User → UI → API → Data on paper before opening more files</li>
+    </ul>
+  </article>
+</body>
+</html>

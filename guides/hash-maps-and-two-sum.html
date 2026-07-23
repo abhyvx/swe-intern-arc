@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hash maps and Two Sum</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="guide.css">
+  </head>
+<body>
+  <article class="guide">
+    <a class="back" href="../index.html">← Back to Arc</a>
+    <h1>Hash maps and Two Sum</h1>
+    <p class="muted">Goal: you can invent the O(n) map pattern yourself, not memorize a solution video.</p>
+
+    <h2>The slow way (and why interviews reject it)</h2>
+    <p>Two Sum: given numbers and a target, return two indices whose values add to target.</p>
+    <p>Brute force: for each i, scan all j &gt; i. That is about n² comparisons. Fine for n=10. Painful for n=10,000. Interviews want you to notice that.</p>
+
+    <h2>The idea: remember what you already saw</h2>
+    <p>While scanning left to right, for value <code>x</code> you need <code>target - x</code> to already have appeared. A hash map (Python <code>dict</code>) stores <code>value → index</code> of numbers you have seen.</p>
+    <p>Average lookup in a dict is O(1). So one pass becomes O(n).</p>
+
+    <h2>Walkthrough</h2>
+    <p><code>nums = [2, 7, 11, 15]</code>, <code>target = 9</code></p>
+    <ol>
+      <li>i=0, x=2, need=7. Map empty. Store <code>{2: 0}</code></li>
+      <li>i=1, x=7, need=2. Map has 2 at index 0. Return <code>[0, 1]</code></li>
+    </ol>
+    <pre class="example">def two_sum(nums, target):
+    seen = {}
+    for i, x in enumerate(nums):
+        need = target - x
+        if need in seen:
+            return [seen[need], i]
+        seen[x] = i</pre>
+
+    <h2>When you use this</h2>
+    <ul>
+      <li>Interview Easy/Medium “find pair / complement” problems</li>
+      <li>Counting frequencies (anagrams, duplicates)</li>
+      <li>Real products: caching an id → object lookup instead of scanning a list</li>
+    </ul>
+
+    <h2>How to write it yourself</h2>
+    <ol>
+      <li>Say the brute force out loud</li>
+      <li>Ask: “What would make the inner scan O(1)?”</li>
+      <li>Name the key you must remember (usually the value, sometimes a sorted tuple)</li>
+      <li>Code one pass; test a case with duplicate values</li>
+    </ol>
+
+    <h2>How to fix common bugs</h2>
+    <ul>
+      <li><strong>Using the same element twice</strong> → store index after the check, or ensure need’s index ≠ i</li>
+      <li><strong>Returning values instead of indices</strong> → read the problem again</li>
+      <li><strong>dict key is list</strong> → lists are unhashable; use tuple or string key</li>
+    </ul>
+
+    <h2>Check yourself</h2>
+    <p>Without looking: write Two Sum on paper. Then explain why the map is better than nested loops to a friend (or voice note).</p>
+  </article>
+</body>
+</html>

@@ -129,7 +129,7 @@ window.PROJECTS = [
       "Build a tiny Redis-like TCP key-value server. This is how networked services actually work: accept loop, protocol, in-memory state, tests, container.",
     whyItMatters:
       "Systems interviews and backend jobs care that you understand sockets, protocols, and concurrency basics. Also pairs with CMSC 216 mental models.",
-    gate: "Free-block schedule builds this Jul 29 to Aug 11. Use this playbook to go deeper than the daily path.",
+    gate: "Free-block schedule builds this Jul 30 to Aug 12. Use this playbook to go deeper than the daily path.",
     order: 2,
     links: [
       { label: "Python sockets HOWTO", url: "https://docs.python.org/3/howto/sockets.html" },

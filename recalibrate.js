@@ -223,24 +223,22 @@
         sessionN += 1;
         const phaseId = phaseForDate(date);
         const first = batch[0];
-        const title =
-          batch.length === 1
-            ? first.step.title
-            : daySession === 1
-              ? `Today · ${first.lessonTitle}`
-              : `Continue · ${first.lessonTitle}`;
+        const dayLabel = first.moduleTitle || first.lessonTitle;
+        const prev = liveLessons[liveLessons.length - 1];
+        const splitContinue =
+          prev &&
+          prev.date === date &&
+          prev.steps.length &&
+          prev.steps[0]._origLessonId === first.lessonId;
 
         liveLessons.push({
           id: `live-${date}-${daySession}`,
-          title,
-          concept: first.concept || "Recalibrated session from your remaining work.",
-          why:
-            status === "behind"
-              ? "Missed work was folded forward in order. Finish this block before later ones."
-              : first.why || "Stay on the arc. Finish this block before later ones.",
+          title: splitContinue ? `${first.lessonTitle} (continued)` : first.lessonTitle,
+          concept: first.concept || "",
+          why: first.why || "Finish this block before later ones.",
           phaseId,
           moduleId: `day-${date}`,
-          moduleTitle: date <= C.meta.freeUntil ? "Recalibrated free block" : date < C.meta.classStart ? "Recalibrated bridge" : "Recalibrated fall",
+          moduleTitle: dayLabel,
           moduleEngine: first.step.engine || "systems",
           date,
           origDate: first.origDate,
@@ -260,15 +258,16 @@
       while (bi < work.length) {
         const batch = work.slice(bi, bi + 4);
         bi += batch.length;
+        const first = batch[0];
         liveLessons.push({
           id: `live-overflow-${overflowDate}`,
-          title: "Overflow catch-up",
-          concept: "Past the arc end date. Finish these to close gaps.",
-          why: "Backlog exceeded realistic packing through December. Do these next.",
+          title: first.lessonTitle || first.step.title,
+          concept: first.concept || "Extra catch-up past the planned end date.",
+          why: first.why || "Finish these to close remaining gaps.",
           phaseId: "fall",
           moduleId: `day-${overflowDate}`,
-          moduleTitle: "Overflow",
-          moduleEngine: "pro",
+          moduleTitle: first.moduleTitle || "Catch-up",
+          moduleEngine: first.step.engine || "pro",
           date: overflowDate,
           steps: batch.map((x) => ({ ...x.step, _origLessonId: x.lessonId })),
         });
@@ -290,9 +289,14 @@
         const lessons = byDate[date];
         const phaseId = phaseForDate(date);
         const pid = byPhase[phaseId] ? phaseId : "fall";
+        const titles = [];
+        lessons.forEach((l) => {
+          if (l.moduleTitle && !titles.includes(l.moduleTitle)) titles.push(l.moduleTitle);
+        });
+        const dayTitle = titles.slice(0, 2).join(" · ") || lessons[0].title;
         byPhase[pid].push({
           id: `day-${date}`,
-          title: lessons[0].moduleTitle,
+          title: dayTitle,
           engine: lessons[0].moduleEngine,
           date,
           why: lessons[0].why,

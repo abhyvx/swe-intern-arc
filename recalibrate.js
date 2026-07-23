@@ -307,14 +307,61 @@
     C.lessons = liveLessons;
     C.lessonIndex = Object.fromEntries(liveLessons.map((l, i) => [l.id, i]));
 
-    const todayMin = liveLessons.filter((l) => l.date === today).reduce((n, l) => n + l.steps.reduce((a, s) => a + (s.min || 20), 0), 0);
+    const todayLessons = liveLessons.filter((l) => l.date === today);
+    const todaySteps = todayLessons.flatMap((l) => l.steps);
+    const todayMin = todaySteps.reduce((n, s) => n + (s.min || 20), 0);
+    const todayTitles = todaySteps.slice(0, 4).map((s) => s.title);
+    const todayMore = todaySteps.length - todayTitles.length;
+
+    const folded = backlog.filter((x) => x.origDate < today);
+    const foldedTitles = folded.slice(0, 3).map((x) => x.step.title);
+    const foldedMore = folded.length - foldedTitles.length;
+
+    const nextDay = liveLessons.find((l) => l.date > today);
+    const doneCount = Object.values(done).filter(Boolean).length;
+    const totalBase = base.reduce((n, l) => n + l.steps.length, 0);
 
     const statusLabel =
       status === "behind"
-        ? `Behind · ~${Math.max(1, daysBehind || Math.ceil(overdueCount / 3))}d`
+        ? `Behind · ${overdueCount} late`
         : status === "ahead"
           ? "Ahead"
           : "On track";
+
+    const parts = [];
+    if (status === "behind") {
+      parts.push(`Behind: ${overdueCount} unfinished step${overdueCount === 1 ? "" : "s"} from earlier days.`);
+    } else if (status === "ahead") {
+      parts.push("Ahead of the original calendar.");
+    } else {
+      parts.push("On track with the calendar.");
+    }
+    if (folded.length) {
+      parts.push(
+        `Moved into today/later (in order): ${foldedTitles.join("; ")}${
+          foldedMore > 0 ? ` (+${foldedMore} more)` : ""
+        }.`
+      );
+    }
+    if (todaySteps.length) {
+      parts.push(
+        `Today (${todayMin}m): ${todayTitles.join("; ")}${todayMore > 0 ? ` (+${todayMore} more)` : ""}.`
+      );
+    } else {
+      parts.push("Nothing packed for today.");
+    }
+    if (nextDay) {
+      const nd = new Date(nextDay.date + "T12:00:00").toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      });
+      parts.push(`Next after today: ${nextDay.title} (${nd}).`);
+    }
+    if (trimmed) {
+      parts.push(`Dropped ${trimmed} filler drill${trimmed === 1 ? "" : "s"} to fit deadlines.`);
+    }
+    parts.push(`Progress ${doneCount}/${totalBase} steps done · ${liveLessons.length} sessions left.`);
 
     C.pace = {
       status,
@@ -322,17 +369,16 @@
       overdueSteps: overdueCount,
       daysBehind,
       todayMinutes: todayMin,
+      todayTitles,
+      foldedCount: folded.length,
+      foldedTitles,
       trimmedFiller: trimmed,
       recalibratedFor: today,
       remainingSessions: liveLessons.length,
-      message:
-        status === "behind"
-          ? `Recalibrated for today. ${overdueCount} missed step${overdueCount === 1 ? "" : "s"} folded forward.${
-              trimmed ? ` Dropped ${trimmed} filler drill${trimmed === 1 ? "" : "s"} to stay realistic.` : ""
-            }`
-          : status === "ahead"
-            ? "Recalibrated. You are ahead of the original calendar."
-            : "Recalibrated. You are on track for the deadlines.",
+      doneCount,
+      totalBase,
+      message: parts.join(" "),
+      summaryLines: parts,
     };
 
     return C.pace;

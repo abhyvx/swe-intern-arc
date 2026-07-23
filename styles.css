@@ -82,11 +82,44 @@ button { font: inherit; cursor: pointer; }
   border-color: var(--line);
 }
 .pace-line {
-  margin: -6px 0 14px;
+  margin: -6px 0 6px;
   font-size: 0.82rem;
   line-height: 1.4;
   color: var(--muted);
 }
+.pace-box {
+  margin: -4px 0 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.pace-details {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--ink);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+.pace-details li + li { margin-top: 4px; }
+.nav-5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+.nav-5 .nav-btn { font-size: 0.78rem; padding: 10px 2px; }
+.done-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: start;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  margin-bottom: 8px;
+}
+.done-item p { margin: 0; font-size: 0.9rem; }
+.done-item .meta { margin-top: 4px; }
+.row-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip-btn.active {
   border-color: var(--accent);
   background: var(--accent-soft);

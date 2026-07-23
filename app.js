@@ -1,16 +1,17 @@
 (() => {
-  const KEY = "abhy-plan-v10";
-  const OLD_KEY = "abhy-plan-v9";
+  const KEY = "abhy-plan-v11";
+  const OLD_KEYS = ["abhy-plan-v10", "abhy-plan-v9"];
   const C = window.CURRICULUM;
   const PROJECTS = window.PROJECTS;
 
   const defaultState = () => ({
-    version: 10,
+    version: 11,
     theme: "dark",
     completedSteps: {},
     completedLessons: {},
     projectSteps: {},
     practiceOpen: {},
+    completionLog: [],
     lessonPtr: 0,
     stepPtr: 0,
     trackFilter: "all",
@@ -24,20 +25,25 @@
     try {
       let raw = JSON.parse(localStorage.getItem(KEY) || "null");
       if (!raw) {
-        const legacy = JSON.parse(localStorage.getItem(OLD_KEY) || "null");
-        if (legacy) {
-          raw = { ...legacy, version: 10 };
-          localStorage.setItem(KEY, JSON.stringify(raw));
-        } else raw = {};
+        for (const k of OLD_KEYS) {
+          const legacy = JSON.parse(localStorage.getItem(k) || "null");
+          if (legacy) {
+            raw = { ...legacy, version: 11 };
+            localStorage.setItem(KEY, JSON.stringify(raw));
+            break;
+          }
+        }
       }
+      if (!raw) raw = {};
       return {
         ...defaultState(),
         ...raw,
-        version: 10,
+        version: 11,
         completedSteps: raw.completedSteps || {},
         completedLessons: raw.completedLessons || {},
         projectSteps: raw.projectSteps || {},
         practiceOpen: raw.practiceOpen || {},
+        completionLog: Array.isArray(raw.completionLog) ? raw.completionLog : [],
       };
     } catch {
       return defaultState();
@@ -194,16 +200,114 @@
     const pace = C.pace || {};
     const chip = document.getElementById("paceChip");
     const line = document.getElementById("paceLine");
+    const details = document.getElementById("paceDetails");
     if (chip) {
       chip.textContent = pace.statusLabel || "On track";
       chip.dataset.status = pace.status || "on_track";
     }
     if (line) {
       const when = pace.recalibratedFor ? fmtDay(pace.recalibratedFor) : "";
-      line.textContent = `${pace.message || "Recalibrated."}${
-        pace.todayMinutes != null ? ` Today ~${pace.todayMinutes}m.` : ""
-      }${when ? ` (${when})` : ""}`;
+      line.textContent = when
+        ? `Plan for ${when} · ${pace.doneCount || 0}/${pace.totalBase || totalSteps()} done`
+        : "Plan updating…";
     }
+    if (details) {
+      const lines = pace.summaryLines || (pace.message ? [pace.message] : []);
+      details.innerHTML = lines.map((x) => `<li>${esc(x)}</li>`).join("");
+    }
+  }
+
+  function lookupStepMeta(key) {
+    const base = C._base?.lessons || [];
+    for (const les of base) {
+      for (const st of les.steps) {
+        if (stepKey(les.id, st.id) === key) {
+          return {
+            key,
+            title: st.title,
+            lessonTitle: les.title,
+            engine: st.engine,
+            origDate: les.date,
+            min: st.min,
+          };
+        }
+      }
+    }
+    return { key, title: key, lessonTitle: "", engine: "", origDate: "", min: 0 };
+  }
+
+  function undoStepByKey(key) {
+    if (!key || !state.completedSteps[key]) {
+      toast("Nothing to undo");
+      return;
+    }
+    delete state.completedSteps[key];
+    if (state.practiceOpen) delete state.practiceOpen[key];
+    state.completionLog = (state.completionLog || []).filter((x) => x.key !== key);
+    applyPlan();
+    render();
+    toast("Undid · step is open again");
+  }
+
+  function undoLastComplete() {
+    const log = state.completionLog || [];
+    if (!log.length) {
+      // Fallback: last key in completedSteps
+      const keys = Object.keys(state.completedSteps).filter((k) => state.completedSteps[k]);
+      if (!keys.length) {
+        toast("Nothing to undo");
+        return;
+      }
+      undoStepByKey(keys[keys.length - 1]);
+      return;
+    }
+    const last = log[log.length - 1];
+    undoStepByKey(last.key);
+  }
+
+  function renderDone() {
+    const keys = Object.keys(state.completedSteps).filter((k) => state.completedSteps[k]);
+    const logOrder = (state.completionLog || []).map((x) => x.key);
+    const ordered = [];
+    const seen = new Set();
+    for (let i = logOrder.length - 1; i >= 0; i--) {
+      const k = logOrder[i];
+      if (state.completedSteps[k] && !seen.has(k)) {
+        ordered.push(k);
+        seen.add(k);
+      }
+    }
+    keys.forEach((k) => {
+      if (!seen.has(k)) ordered.push(k);
+    });
+
+    document.getElementById("doneLede").textContent = ordered.length
+      ? `${ordered.length} step${ordered.length === 1 ? "" : "s"} marked complete. Undo any you finished by mistake.`
+      : "No steps completed yet. Finish work in Continue, then it shows up here.";
+
+    document.getElementById("donePanel").innerHTML = ordered.length
+      ? ordered
+          .map((key) => {
+            const meta = lookupStepMeta(key);
+            const log = (state.completionLog || []).find((x) => x.key === key);
+            const when = log?.at
+              ? new Date(log.at).toLocaleString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "2-digit",
+                })
+              : "Completed";
+            return `<article class="done-item">
+              <div>
+                <p><strong>${esc(meta.title)}</strong></p>
+                <p class="meta">${esc(meta.lessonTitle)}${meta.origDate ? ` · planned ${esc(fmtDay(meta.origDate))}` : ""} · ${esc(when)}</p>
+              </div>
+              <button type="button" class="btn ghost" data-undo-key="${esc(key)}">Undo</button>
+            </article>`;
+          })
+          .join("")
+      : `<p class="muted">Empty for now.</p>`;
   }
 
   function renderContinue() {
@@ -342,7 +446,7 @@
       .join("");
 
     document.getElementById("scheduleLede").textContent =
-      (C.pace?.message ? C.pace.message + " " : "") +
+      (C.pace?.summaryLines ? C.pace.summaryLines[0] + " " : "") +
       "Free time through " +
       fmtDay(C.meta.freeUntil) +
       ". Classes " +
@@ -530,6 +634,7 @@
   function render() {
     renderContinue();
     renderMap();
+    renderDone();
     renderSkills();
     renderProjects();
     save();
@@ -570,9 +675,15 @@
       }
     }
     state.completedSteps[progressKey(les, step)] = true;
+    state.completionLog = state.completionLog || [];
+    state.completionLog.push({
+      key: progressKey(les, step),
+      title: step.title,
+      at: new Date().toISOString(),
+    });
 
     applyPlan();
-    toast(C.lessons.length ? "Recalibrated · next up" : "Arc complete");
+    toast("Saved · plan updated");
     render();
   }
 
@@ -589,8 +700,15 @@
   });
 
   document.getElementById("completeBtn").addEventListener("click", completeCurrent);
+  document.getElementById("undoBtn").addEventListener("click", undoLastComplete);
+  document.getElementById("undoBtn2").addEventListener("click", undoLastComplete);
 
   document.body.addEventListener("click", (e) => {
+    const undoKey = e.target.closest("[data-undo-key]");
+    if (undoKey && undoKey.dataset.undoKey) {
+      undoStepByKey(undoKey.dataset.undoKey);
+      return;
+    }
     const jump = e.target.closest("[data-jump-lesson]");
     if (jump && jump.dataset.jumpLesson) {
       jumpToLesson(jump.dataset.jumpLesson);
@@ -645,15 +763,16 @@
         state = {
           ...defaultState(),
           ...incoming,
-          version: 10,
+          version: 11,
           completedSteps: incoming.completedSteps || {},
           completedLessons: incoming.completedLessons || {},
           projectSteps: incoming.projectSteps || {},
           practiceOpen: incoming.practiceOpen || {},
+          completionLog: Array.isArray(incoming.completionLog) ? incoming.completionLog : [],
         };
         applyPlan();
         render();
-        toast("Imported · recalibrated");
+        toast("Imported · plan updated");
       } catch {
         toast("Import failed");
       }

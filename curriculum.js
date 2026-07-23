@@ -1,7 +1,7 @@
 /*! SWE Intern Arc: day spine
- * Summer free time: Jul 23 to Aug 15 (dense daily learning)
- * Bridge: Aug 16 to Aug 30 (travel + settle + 216 preview)
- * Fall: Aug 31 to Dec 15 (classes + winter intern ready by early Nov)
+ * Summer free time: Jul 24 to Aug 16 (dense daily learning)
+ * Bridge: Aug 17 to Aug 31 (travel + settle + 216 preview)
+ * Fall: Sep 1 to Dec 16 (classes + winter intern ready by early Nov)
  * Every step: learn (concept + worked idea) · do · prove · resource
  * ISO dates internal only.
  */
@@ -9,11 +9,11 @@ window.CURRICULUM = {
   meta: {
     name: "SWE Intern Arc",
     person: "Abhy",
-    start: "2026-07-23",
-    end: "2026-12-15",
-    freeUntil: "2026-08-15",
-    classStart: "2026-08-31",
-    winterReady: "2026-11-01",
+    start: "2026-07-24",
+    end: "2026-12-16",
+    freeUntil: "2026-08-16",
+    classStart: "2026-09-01",
+    winterReady: "2026-11-02",
     north:
       "By Dec: defendable projects, C/216 survival, DSA patterns, winter + Summer 2027 intern materials.",
   },
@@ -165,19 +165,19 @@ window.CURRICULUM = {
     {
       id: "summer",
       title: "Summer free block",
-      range: ["2026-07-23", "2026-08-15"],
+      range: ["2026-07-24", "2026-08-16"],
       goal: "Most free time. Learn C memory, DSA patterns, ship Mini-Redis core, own one Gambit path.",
     },
     {
       id: "bridge",
       title: "Travel and settle",
-      range: ["2026-08-16", "2026-08-30"],
+      range: ["2026-08-17", "2026-08-31"],
       goal: "Protect gains. Light reps. Preview 216 ideas before classes.",
     },
     {
       id: "fall",
       title: "Fall semester + winter intern push",
-      range: ["2026-08-31", "2026-12-15"],
+      range: ["2026-09-01", "2026-12-16"],
       goal: "216 primary on class days. Keep DSA and build alive. Winter-intern ready by early November.",
     },
   ];
@@ -197,7 +197,7 @@ window.CURRICULUM = {
   // ========== SUMMER DAYS ==========
 
   addDay(
-    "2026-07-23",
+    "2026-07-24",
     "How programs run + hash maps",
     "By tonight you understand compile vs run, and why a dict makes Two Sum fast.",
     [
@@ -274,7 +274,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-07-24",
+    "2026-07-25",
     "Arrays in C + Contains Duplicate pattern",
     "You can fill and print a C array cleanly, and you can detect duplicates with a set in O(n).",
     [
@@ -315,7 +315,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-07-25",
+    "2026-07-26",
     "Pointers core day",
     "You can explain * and & without hand-waving, and Valid Anagram with counts.",
     [
@@ -358,7 +358,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-07-26",
+    "2026-07-27",
     "swap, strlen, gdb",
     "You write pointer swap and strlen, and you can stop a program in gdb.",
     [
@@ -397,7 +397,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-07-27",
+    "2026-07-28",
     "Gambit path trace (real code)",
     "You number a real data→score path with file names and one debug proof.",
     [
@@ -436,7 +436,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-07-28",
+    "2026-07-29",
     "malloc + internship 10 min + Valid Palindrome",
     "Heap allocation is concrete. Two pointers on strings.",
     [
@@ -477,7 +477,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-07-29",
+    "2026-07-30",
     "structs + pytest + sockets theory",
     "Structs by pointer, and the network ideas Mini-Redis needs.",
     [
@@ -516,7 +516,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-07-30",
+    "2026-07-31",
     "TCP echo server (Mini-Redis foundation)",
     "A working echo means your accept loop is real.",
     [
@@ -549,7 +549,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-07-31",
+    "2026-08-01",
     "Protocol parser with tests",
     "SET/GET/DEL parsing is green before wiring the socket.",
     [
@@ -588,7 +588,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-01",
+    "2026-08-02",
     "Wire SET/GET over TCP",
     "Mini-Redis speaks: set a key, get it back.",
     [
@@ -618,7 +618,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-02",
+    "2026-08-03",
     "DEL + README stranger test + Binary Search theory",
     "Demo must work from README alone. Binary search halves sorted ranges.",
     [
@@ -648,7 +648,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-03",
+    "2026-08-04",
     "Gambit features honesty + FastAPI hello",
     "Only claim ML you can explain. Touch FastAPI for API literacy.",
     [
@@ -687,7 +687,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-04",
+    "2026-08-05",
     "SQL joins + Git real conflict",
     "Joins and merge conflicts are weekday pro skills.",
     [
@@ -717,7 +717,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-05",
+    "2026-08-06",
     "TypeScript types + trees intro",
     "Types on paper, recursion on trees.",
     [
@@ -748,7 +748,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-06",
+    "2026-08-07",
     "Docker for Mini-Redis",
     "One-command demo starts looking like engineering.",
     [
@@ -777,7 +777,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-07",
+    "2026-08-08",
     "GitHub Actions CI + OSTEP intro",
     "Green CI + OS vocabulary for 216.",
     [
@@ -807,7 +807,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-08",
+    "2026-08-09",
     "Gambit oral + ARCHITECTURE draft",
     "If you cannot teach it, you do not own it.",
     [
@@ -835,7 +835,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-09",
+    "2026-08-10",
     "NextWork AWS project 1",
     "Cloud as a finished writeup, not console tourism.",
     [
@@ -865,7 +865,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-10",
+    "2026-08-11",
     "TTL stretch or Medium + work bullets draft",
     "Systems stretch + start winter materials early.",
     [
@@ -895,7 +895,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-11",
+    "2026-08-12",
     "Ship day: stranger demo",
     "One finish line crossed before the free block ends.",
     [
@@ -922,7 +922,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-12",
+    "2026-08-13",
     "Shell fluency + second AWS or NumPy",
     "CLI speed matters in 216 and servers.",
     [
@@ -951,7 +951,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-13",
+    "2026-08-14",
     "Merge Two Lists + STAR stories",
     "Linked list pattern + behavioral ammo.",
     [
@@ -982,7 +982,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-14",
+    "2026-08-15",
     "Review tournament + closeout light",
     "Retrieval day. Pack knowledge before travel.",
     [
@@ -1010,7 +1010,7 @@ window.CURRICULUM = {
   );
 
   addDay(
-    "2026-08-15",
+    "2026-08-16",
     "Free-block finale",
     "Lock demos. Rest enough to travel. You should feel different than Jul 23.",
     [
@@ -1045,7 +1045,7 @@ window.CURRICULUM = {
     }
   }
 
-  addDay("2026-08-16", "Travel eve: optional micro only", "Do not start new systems. Protect energy.", [
+  addDay("2026-08-17", "Travel eve: optional micro only", "Do not start new systems. Protect energy.", [
     L("b0816", "Optional review or rest", "Rest is allowed.", [
       S("b0816-1", "Re-read GAMBIT_PATH or rest", {
         min: 20,
@@ -1058,7 +1058,7 @@ window.CURRICULUM = {
     ]),
   ]);
 
-  addDay("2026-08-17", "Travel", "Access check only.", [
+  addDay("2026-08-18", "Travel", "Access check only.", [
     L("b0817", "Arrive", "Heavy learning paused.", [
       S("b0817-1", "Confirm umd-prep reachable", {
         min: 15,
@@ -1204,7 +1204,7 @@ window.CURRICULUM = {
     },
   ];
 
-  eachDate("2026-08-18", "2026-08-30", (iso, dow, i) => {
+  eachDate("2026-08-19", "2026-08-31", (iso, dow, i) => {
     if (dayBag[iso]) return;
     const plan = bridgePlans[i % bridgePlans.length];
     addDay(iso, plan.title, plan.why, [
@@ -1836,7 +1836,7 @@ window.CURRICULUM = {
       const d = new Date(start);
       d.setDate(d.getDate() + slot.off);
       const iso = d.toISOString().slice(0, 10);
-      if (iso > "2026-12-15") return;
+      if (iso > "2026-12-16") return;
       const steps = w[slot.key];
       if (!steps || !steps.length) return;
       if (dayBag[iso]) return;
@@ -1850,7 +1850,7 @@ window.CURRICULUM = {
   }
 
   // Aug 31 2026 is Monday
-  eachDate("2026-08-31", "2026-12-15", (iso, dow, i) => {
+  eachDate("2026-09-01", "2026-12-16", (iso, dow, i) => {
     if (dow === 1) {
       // Monday starts a week
       const weekIndex = Math.min(fallWeeks.length - 1, Math.floor(i / 7));
@@ -1859,7 +1859,7 @@ window.CURRICULUM = {
   });
 
   // Fill any remaining fall dates with a short concrete drill (not vague homework)
-  eachDate("2026-08-31", "2026-12-15", (iso, dow) => {
+  eachDate("2026-09-01", "2026-12-16", (iso, dow) => {
     if (dayBag[iso]) return;
     const drills = {
       0: S("fill-sun-"+iso, "Review from blank (short)", {
@@ -1928,8 +1928,8 @@ window.CURRICULUM = {
     .forEach((date) => {
       const d = dayBag[date];
       let phaseId = "fall";
-      if (date <= "2026-08-15") phaseId = "summer";
-      else if (date <= "2026-08-30") phaseId = "bridge";
+      if (date <= "2026-08-16") phaseId = "summer";
+      else if (date <= "2026-08-31") phaseId = "bridge";
       const mod = {
         id: `day-${date}`,
         title: d.title,

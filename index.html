@@ -20,11 +20,15 @@
       </div>
     </header>
 
-    <p class="pace-line" id="paceLine">Recalibrating…</p>
+    <div class="pace-box" id="paceBox">
+      <p class="pace-line" id="paceLine">Loading plan…</p>
+      <ul class="pace-details" id="paceDetails"></ul>
+    </div>
 
-    <nav class="nav">
+    <nav class="nav nav-5">
       <button class="nav-btn active" data-tab="continue">Continue</button>
       <button class="nav-btn" data-tab="map">Schedule</button>
+      <button class="nav-btn" data-tab="done">Done</button>
       <button class="nav-btn" data-tab="skills">Skills</button>
       <button class="nav-btn" data-tab="projects">Projects</button>
     </nav>
@@ -53,11 +57,12 @@
 
         <div class="row-actions">
           <button type="button" class="btn" id="completeBtn">Mark step complete</button>
+          <button type="button" class="btn ghost" id="undoBtn">Undo last complete</button>
         </div>
       </section>
 
       <section class="view" id="view-map">
-        <p class="lede" id="scheduleLede">Summer free time runs through mid August. Classes start end of August. Winter intern materials lock by early November.</p>
+        <p class="lede" id="scheduleLede">Summer free time runs through mid August. Classes start early September. Winter intern materials lock by early November.</p>
         <div class="filter-row" id="segmentFilters"></div>
         <div id="phaseMap"></div>
         <div class="footer-actions">
@@ -67,6 +72,14 @@
           <button type="button" class="btn ghost" id="resetBtn">Reset arc</button>
         </div>
         <p class="hint" id="saveMeta"></p>
+      </section>
+
+      <section class="view" id="view-done">
+        <p class="lede" id="doneLede">Everything you have marked complete. Undo if you clicked too early.</p>
+        <div class="row-actions" style="margin-bottom:12px">
+          <button type="button" class="btn ghost" id="undoBtn2">Undo last complete</button>
+        </div>
+        <div id="donePanel"></div>
       </section>
 
       <section class="view" id="view-skills">

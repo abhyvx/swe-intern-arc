@@ -106,6 +106,10 @@ button { font: inherit; cursor: pointer; }
   grid-template-columns: repeat(5, 1fr);
 }
 .nav-5 .nav-btn { font-size: 0.78rem; padding: 10px 2px; }
+.nav-6 {
+  grid-template-columns: repeat(6, 1fr);
+}
+.nav-6 .nav-btn { font-size: 0.72rem; padding: 10px 2px; }
 .done-item {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -120,6 +124,70 @@ button { font: inherit; cursor: pointer; }
 .done-item p { margin: 0; font-size: 0.9rem; }
 .done-item .meta { margin-top: 4px; }
 .row-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.note-box, .note-scratch, .note-card {
+  border: 1px solid #2a342e;
+  border-radius: 12px;
+  padding: 12px;
+  background: #141a16;
+  margin: 12px 0;
+  color: #e8ebe6;
+}
+.note-box .block-label,
+.note-scratch .block-label,
+.note-card .block-label {
+  color: #5dcaa4;
+}
+.note-box textarea,
+.note-scratch textarea,
+.note-card textarea {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #2a342e;
+  background: #0c100e;
+  color: #d7ffe9;
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  resize: vertical;
+  min-height: 88px;
+}
+.note-box textarea:focus,
+.note-scratch textarea:focus,
+.note-card textarea:focus {
+  outline: 1px solid #5dcaa4;
+}
+.notes-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.notes-toolbar input[type="search"] {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+.note-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+.note-card h3 {
+  margin: 0;
+  font-size: 0.98rem;
+}
+.note-empty {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
 .chip-btn.active {
   border-color: var(--accent);
   background: var(--accent-soft);

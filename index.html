@@ -25,10 +25,11 @@
       <ul class="pace-details" id="paceDetails"></ul>
     </div>
 
-    <nav class="nav nav-5">
+    <nav class="nav nav-6">
       <button class="nav-btn active" data-tab="continue">Continue</button>
       <button class="nav-btn" data-tab="map">Schedule</button>
       <button class="nav-btn" data-tab="done">Done</button>
+      <button class="nav-btn" data-tab="notes">Notes</button>
       <button class="nav-btn" data-tab="skills">Skills</button>
       <button class="nav-btn" data-tab="projects">Projects</button>
     </nav>
@@ -80,6 +81,20 @@
           <button type="button" class="btn ghost" id="undoBtn2">Undo last complete</button>
         </div>
         <div id="donePanel"></div>
+      </section>
+
+      <section class="view" id="view-notes">
+        <p class="lede">Your notebook for every lesson. Write while learning in Continue, or edit anything here. Saves in this browser and in Export.</p>
+        <div class="note-scratch">
+          <p class="block-label">Scratch pad</p>
+          <textarea id="scratchPad" rows="4" placeholder="Random thoughts, blockers, links…"></textarea>
+        </div>
+        <div class="notes-toolbar">
+          <input type="search" id="notesSearch" placeholder="Search lessons or notes…" autocomplete="off">
+          <div class="filter-row" id="notesFilters"></div>
+          <button type="button" class="btn ghost" id="exportNotesBtn">Export notes.md</button>
+        </div>
+        <div id="notesPanel"></div>
       </section>
 
       <section class="view" id="view-skills">

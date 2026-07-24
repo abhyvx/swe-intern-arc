@@ -29,7 +29,7 @@
       <button class="nav-btn active" data-tab="continue">Continue</button>
       <button class="nav-btn" data-tab="map">Schedule</button>
       <button class="nav-btn" data-tab="done">Done</button>
-      <button class="nav-btn" data-tab="notes">Notes</button>
+      <button class="nav-btn" data-tab="notes">Book</button>
       <button class="nav-btn" data-tab="skills">Skills</button>
       <button class="nav-btn" data-tab="projects">Projects</button>
     </nav>
@@ -84,15 +84,11 @@
       </section>
 
       <section class="view" id="view-notes">
-        <p class="lede">Your notebook for every lesson. Write while learning in Continue, or edit anything here. Saves in this browser and in Export.</p>
-        <div class="note-scratch">
-          <p class="block-label">Scratch pad</p>
-          <textarea id="scratchPad" rows="4" placeholder="Random thoughts, blockers, links…"></textarea>
-        </div>
+        <p class="lede">Compiled teaching notebook: every lesson’s why, idea, syntax, code, walkthrough, fixes, and links in one place.</p>
         <div class="notes-toolbar">
-          <input type="search" id="notesSearch" placeholder="Search lessons or notes…" autocomplete="off">
+          <input type="search" id="notesSearch" placeholder="Search topics, syntax, titles…" autocomplete="off">
           <div class="filter-row" id="notesFilters"></div>
-          <button type="button" class="btn ghost" id="exportNotesBtn">Export notes.md</button>
+          <button type="button" class="btn ghost" id="exportNotesBtn">Download notebook.md</button>
         </div>
         <div id="notesPanel"></div>
       </section>

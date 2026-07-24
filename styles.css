@@ -124,39 +124,39 @@ button { font: inherit; cursor: pointer; }
 .done-item p { margin: 0; font-size: 0.9rem; }
 .done-item .meta { margin-top: 4px; }
 .row-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.note-box, .note-scratch, .note-card {
-  border: 1px solid #2a342e;
+.book-card {
+  border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 12px;
+  background: var(--surface);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.book-card > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+}
+.book-card > summary::-webkit-details-marker { display: none; }
+.book-card > summary strong {
+  flex: 1 1 160px;
+  font-size: 0.95rem;
+}
+.book-card[open] > summary {
+  border-bottom: 1px solid var(--line);
+}
+.book-body {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
   background: #141a16;
-  margin: 12px 0;
-  color: #e8ebe6;
 }
-.note-box .block-label,
-.note-scratch .block-label,
-.note-card .block-label {
-  color: #5dcaa4;
-}
-.note-box textarea,
-.note-scratch textarea,
-.note-card textarea {
-  width: 100%;
-  margin-top: 6px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #2a342e;
-  background: #0c100e;
-  color: #d7ffe9;
-  font: inherit;
+.note-empty {
+  color: var(--muted);
   font-size: 0.9rem;
-  line-height: 1.45;
-  resize: vertical;
-  min-height: 88px;
-}
-.note-box textarea:focus,
-.note-scratch textarea:focus,
-.note-card textarea:focus {
-  outline: 1px solid #5dcaa4;
 }
 .notes-toolbar {
   display: flex;
@@ -172,21 +172,6 @@ button { font: inherit; cursor: pointer; }
   background: var(--surface);
   color: var(--ink);
   font: inherit;
-}
-.note-card-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  align-items: baseline;
-  flex-wrap: wrap;
-}
-.note-card h3 {
-  margin: 0;
-  font-size: 0.98rem;
-}
-.note-empty {
-  color: var(--muted);
-  font-size: 0.9rem;
 }
 .chip-btn.active {
   border-color: var(--accent);

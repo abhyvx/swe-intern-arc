@@ -14,7 +14,7 @@
     completionLog: [],
     notes: {},
     scratchPad: "",
-    notesFilter: "written",
+    notesFilter: "all",
     notesQuery: "",
     lessonPtr: 0,
     stepPtr: 0,
@@ -51,7 +51,7 @@
         completionLog: Array.isArray(raw.completionLog) ? raw.completionLog : [],
         notes: raw.notes || {},
         scratchPad: raw.scratchPad || "",
-        notesFilter: raw.notesFilter || "written",
+        notesFilter: raw.notesFilter || "all",
         notesQuery: raw.notesQuery || "",
       };
     } catch {
@@ -410,22 +410,6 @@
       </div>`
           : `<button type="button" class="btn" id="unlockPractice">I understand the idea · start practice</button>`
       }
-      <div class="note-box">
-        <p class="block-label">Your notes for this step</p>
-        <textarea id="stepNote" rows="5" placeholder="Write what clicked, what broke, commands you ran, questions…">${esc(
-          (state.notes[pkey] && state.notes[pkey].text) || ""
-        )}</textarea>
-        <p class="meta" id="stepNoteMeta">${
-          state.notes[pkey]?.updatedAt
-            ? `Saved ${new Date(state.notes[pkey].updatedAt).toLocaleString("en-US", {
-                month: "short",
-                day: "numeric",
-                hour: "numeric",
-                minute: "2-digit",
-              })}`
-            : "Autosaves as you type"
-        }</p>
-      </div>
     `;
 
     const unlockBtn = document.getElementById("unlockPractice");
@@ -435,13 +419,6 @@
         state.practiceOpen[pkey] = true;
         render();
       };
-    }
-
-    const stepNote = document.getElementById("stepNote");
-    if (stepNote) {
-      stepNote.addEventListener("input", () => {
-        saveNoteText(pkey, stepNote.value, document.getElementById("stepNoteMeta"));
-      });
     }
 
     const locked = les.steps
@@ -663,26 +640,13 @@
       .join("");
   }
 
-  function saveNoteText(key, text, metaEl) {
-    state.notes = state.notes || {};
-    const trimmed = text;
-    if (!trimmed.trim()) {
-      delete state.notes[key];
-    } else {
-      state.notes[key] = { text: trimmed, updatedAt: new Date().toISOString() };
-    }
-    if (metaEl) {
-      metaEl.textContent = "Saved just now";
-    }
-    clearTimeout(noteSaveTimer);
-    noteSaveTimer = setTimeout(() => save(), 250);
-  }
-
-  function allCurriculumEntries() {
+  function teachingEntries() {
     const base = C._base?.lessons || [];
     const out = [];
     base.forEach((les) => {
       les.steps.forEach((st) => {
+        const teach = st.teach || {};
+        const resources = st.resources || (st.resource ? [st.resource] : []);
         out.push({
           key: stepKey(les.id, st.id),
           title: st.title,
@@ -690,6 +654,11 @@
           moduleTitle: les.moduleTitle || "",
           engine: st.engine,
           date: les.date,
+          phaseId: les.phaseId,
+          teach,
+          resources,
+          do: st.do || "",
+          prove: st.prove || "",
           done: !!state.completedSteps[stepKey(les.id, st.id)],
         });
       });
@@ -697,16 +666,47 @@
     return out;
   }
 
-  function renderNotes() {
-    const scratch = document.getElementById("scratchPad");
-    if (scratch && document.activeElement !== scratch) {
-      scratch.value = state.scratchPad || "";
-    }
+  function teachCardHtml(e, open) {
+    const t = e.teach || {};
+    const res = (e.resources || [])
+      .map(
+        (r) =>
+          `<a class="resource-btn" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.label)}${
+            r.use ? ` <span class="res-use">· ${esc(r.use)}</span>` : ""
+          }</a>`
+      )
+      .join("");
+    return `<details class="book-card" ${open ? "open" : ""} data-book-key="${esc(e.key)}">
+      <summary>
+        <span class="track-pill track-${esc(e.engine)}">${esc(engineName(e.engine))}</span>
+        <strong>${esc(e.title)}</strong>
+        <span class="meta">${e.date ? esc(fmtDay(e.date)) + " · " : ""}${esc(e.moduleTitle || e.lessonTitle)}${
+          e.done ? " · done" : ""
+        }</span>
+      </summary>
+      <div class="book-body teach-panel">
+        ${t.why ? `<div class="block"><p class="block-label">Why this matters</p><p>${esc(t.why)}</p></div>` : ""}
+        ${t.idea ? `<div class="block"><p class="block-label">The idea</p><p>${esc(t.idea)}</p></div>` : ""}
+        ${t.when ? `<div class="block"><p class="block-label">When / where you use it</p><p>${esc(t.when)}</p></div>` : ""}
+        ${t.syntax ? `<div class="block"><p class="block-label">Syntax</p><pre class="example">${esc(t.syntax)}</pre></div>` : ""}
+        ${t.code ? `<div class="block"><p class="block-label">Code</p><pre class="example">${esc(t.code)}</pre></div>` : ""}
+        ${
+          t.walkthrough
+            ? `<div class="block"><p class="block-label">Walkthrough</p><pre class="example">${esc(t.walkthrough)}</pre></div>`
+            : ""
+        }
+        ${t.bugs ? `<div class="block"><p class="block-label">How to fix common failures</p><p>${esc(t.bugs)}</p></div>` : ""}
+        ${e.do ? `<div class="block"><p class="block-label">Do</p><p>${esc(e.do)}</p></div>` : ""}
+        ${e.prove ? `<div class="block"><p class="block-label">Prove</p><p>${esc(e.prove)}</p></div>` : ""}
+        ${res ? `<div class="block"><p class="block-label">Resources</p><div class="res-list">${res}</div></div>` : ""}
+      </div>
+    </details>`;
+  }
 
+  function renderNotes() {
     const filters = [
-      { id: "written", name: "With notes" },
-      { id: "all", name: "All lessons" },
-      { id: "done", name: "Completed" },
+      { id: "all", name: "All" },
+      ...C.engines.map((e) => ({ id: e.id, name: e.name })),
     ];
     document.getElementById("notesFilters").innerHTML = filters
       .map(
@@ -723,97 +723,103 @@
     }
 
     const q = (state.notesQuery || "").trim().toLowerCase();
-    let entries = allCurriculumEntries();
-    if (state.notesFilter === "written") {
-      entries = entries.filter((e) => (state.notes[e.key]?.text || "").trim());
-    } else if (state.notesFilter === "done") {
-      entries = entries.filter((e) => e.done);
+    let entries = teachingEntries();
+    if (state.notesFilter && state.notesFilter !== "all" && state.notesFilter !== "written") {
+      entries = entries.filter((e) => e.engine === state.notesFilter);
     }
     if (q) {
       entries = entries.filter((e) => {
-        const note = state.notes[e.key]?.text || "";
-        return (
-          e.title.toLowerCase().includes(q) ||
-          e.lessonTitle.toLowerCase().includes(q) ||
-          e.moduleTitle.toLowerCase().includes(q) ||
-          note.toLowerCase().includes(q)
-        );
+        const t = e.teach || {};
+        const blob = [
+          e.title,
+          e.lessonTitle,
+          e.moduleTitle,
+          t.why,
+          t.idea,
+          t.when,
+          t.syntax,
+          t.code,
+          t.walkthrough,
+          t.bugs,
+          e.do,
+          e.prove,
+        ]
+          .join(" ")
+          .toLowerCase();
+        return blob.includes(q);
       });
     }
 
-    // Written notes first by update time; then the rest by curriculum order
-    entries.sort((a, b) => {
-      const at = state.notes[a.key]?.updatedAt || "";
-      const bt = state.notes[b.key]?.updatedAt || "";
-      if (state.notesFilter === "written") return bt.localeCompare(at);
-      if (at && !bt) return -1;
-      if (!at && bt) return 1;
-      if (at && bt && at !== bt) return bt.localeCompare(at);
-      return 0;
-    });
-
-    const limit = state.notesFilter === "all" && !q ? 40 : 120;
-    const shown = entries.slice(0, limit);
-    const more = entries.length - shown.length;
-
-    document.getElementById("notesPanel").innerHTML = shown.length
-      ? shown
-          .map((e) => {
-            const note = state.notes[e.key] || {};
-            const when = note.updatedAt
-              ? new Date(note.updatedAt).toLocaleString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "2-digit",
-                })
-              : "Empty";
-            return `<article class="note-card" data-note-key="${esc(e.key)}">
-              <div class="note-card-top">
-                <div>
-                  <h3>${esc(e.title)}</h3>
-                  <p class="meta">${esc(e.moduleTitle || e.lessonTitle)}${
-                    e.date ? ` · ${esc(fmtDay(e.date))}` : ""
-                  }${e.done ? " · done" : ""}</p>
-                </div>
-                <span class="meta">${esc(when)}</span>
-              </div>
-              <textarea rows="4" data-note-input="${esc(e.key)}" placeholder="Notes for this lesson…">${esc(
-                note.text || ""
-              )}</textarea>
-            </article>`;
-          })
-          .join("") +
-        (more > 0
-          ? `<p class="note-empty">Showing ${shown.length} of ${entries.length}. Search to narrow.</p>`
-          : "")
-      : `<p class="note-empty">${
-          state.notesFilter === "written"
-            ? "No notes yet. Write on Continue or switch to All lessons."
-            : "No lessons match."
-        }</p>`;
+    const openFirst = !!q && entries.length > 0 && entries.length <= 12;
+    document.getElementById("notesPanel").innerHTML = entries.length
+      ? `<p class="meta" style="margin:0 0 10px">${entries.length} lesson${entries.length === 1 ? "" : "s"}</p>` +
+        entries.map((e, i) => teachCardHtml(e, openFirst || (i === 0 && !!q))).join("")
+      : `<p class="note-empty">No lessons match.</p>`;
   }
 
   function exportNotesMarkdown() {
-    const lines = ["# SWE Intern Arc notes", "", `Exported ${new Date().toLocaleString("en-US")}`, ""];
-    if ((state.scratchPad || "").trim()) {
-      lines.push("## Scratch pad", "", state.scratchPad.trim(), "");
+    const lines = [
+      "# SWE Intern Arc · teaching notebook",
+      "",
+      `Compiled ${new Date().toLocaleString("en-US")}`,
+      "",
+    ];
+    let entries = teachingEntries();
+    if (state.notesFilter && state.notesFilter !== "all") {
+      entries = entries.filter((e) => e.engine === state.notesFilter);
     }
-    allCurriculumEntries().forEach((e) => {
-      const text = (state.notes[e.key]?.text || "").trim();
-      if (!text) return;
+    const q = (state.notesQuery || "").trim().toLowerCase();
+    if (q) {
+      entries = entries.filter((e) => {
+        const t = e.teach || {};
+        return [e.title, t.idea, t.syntax, t.code].join(" ").toLowerCase().includes(q);
+      });
+    }
+    entries.forEach((e) => {
+      const t = e.teach || {};
       lines.push(`## ${e.title}`);
-      lines.push(`*${e.moduleTitle || e.lessonTitle}${e.date ? ` · ${fmtDay(e.date)}` : ""}*`);
+      lines.push(`*${e.moduleTitle || e.lessonTitle}${e.date ? ` · ${fmtDay(e.date)}` : ""} · ${engineName(e.engine)}*`);
       lines.push("");
-      lines.push(text);
-      lines.push("");
+      if (t.why) {
+        lines.push("### Why", t.why, "");
+      }
+      if (t.idea) {
+        lines.push("### Idea", t.idea, "");
+      }
+      if (t.when) {
+        lines.push("### When", t.when, "");
+      }
+      if (t.syntax) {
+        lines.push("### Syntax", "```", t.syntax, "```", "");
+      }
+      if (t.code) {
+        lines.push("### Code", "```", t.code, "```", "");
+      }
+      if (t.walkthrough) {
+        lines.push("### Walkthrough", "```", t.walkthrough, "```", "");
+      }
+      if (t.bugs) {
+        lines.push("### Fixes", t.bugs, "");
+      }
+      if (e.do) {
+        lines.push("### Do", e.do, "");
+      }
+      if (e.prove) {
+        lines.push("### Prove", e.prove, "");
+      }
+      if (e.resources?.length) {
+        lines.push("### Resources");
+        e.resources.forEach((r) => lines.push(`- [${r.label}](${r.url})`));
+        lines.push("");
+      }
+      lines.push("---", "");
     });
     const blob = new Blob([lines.join("\n")], { type: "text/markdown" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "swe-intern-arc-notes.md";
+    a.download = "swe-intern-arc-notebook.md";
     a.click();
-    toast("Notes exported");
+    toast("Notebook downloaded");
   }
 
   function render() {
@@ -890,12 +896,6 @@
   document.getElementById("undoBtn2").addEventListener("click", undoLastComplete);
   document.getElementById("exportNotesBtn").addEventListener("click", exportNotesMarkdown);
 
-  document.getElementById("scratchPad").addEventListener("input", (e) => {
-    state.scratchPad = e.target.value;
-    clearTimeout(noteSaveTimer);
-    noteSaveTimer = setTimeout(() => save(), 250);
-  });
-
   document.getElementById("notesSearch").addEventListener("input", (e) => {
     state.notesQuery = e.target.value;
     clearTimeout(noteSaveTimer);
@@ -903,12 +903,6 @@
       renderNotes();
       save();
     }, 180);
-  });
-
-  document.body.addEventListener("input", (e) => {
-    const ta = e.target.closest("[data-note-input]");
-    if (!ta) return;
-    saveNoteText(ta.dataset.noteInput, ta.value);
   });
 
   document.body.addEventListener("click", (e) => {
